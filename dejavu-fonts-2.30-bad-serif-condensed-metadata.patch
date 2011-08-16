@@ -1,0 +1,96 @@
+diff -uNr dejavu-fonts-2.30/scripts/narrow.pe dejavu-fonts.trunk/scripts/narrow.pe
+--- dejavu-fonts-2.30/scripts/narrow.pe	1970-01-01 01:00:00.000000000 +0100
++++ dejavu-fonts.trunk/scripts/narrow.pe	2009-09-07 12:15:18.000000000 +0200
+@@ -0,0 +1,62 @@
++#!/usr/bin/env fontforge
++# $Id$
++
++# script file for FontForge for font narrowing
++# usage: fontforge -script narrow.pe scale *.sfd
++#   created files have suffix .narrow
++
++# DejaVu Condensed have scale 90
++
++if ($version < "20050209")
++  Error("Your version of FontForge transforms glyphs w/o content");
++endif
++if ($argc < 2)
++  Error("usage: scale sfds...")
++endif
++scale = Strtol($argv[1])
++i = 2
++while (i < $argc)
++  Open($argv[i], 1)
++  SelectAll()
++  Scale(scale, 100, 0, 0)
++  # Panose changes are valid only for DejaVu fonts (I guess)
++  SetPanose(3, 6)
++  new_fontname = $fontname
++  old_familyname = $familyname
++  j = Strstr(new_fontname, "-Roman")
++  if (j > -1)
++    new_fontname = Strsub(new_fontname, 0, j)
++  endif
++  j = Strstr(new_fontname, "-")
++  if (j > -1)
++    new_fontname = Strsub(new_fontname, 0, j) + "Condensed" + Strsub(new_fontname, j)
++  else
++    new_fontname = new_fontname + "Condensed"
++  endif
++  new_fullname = $fullname
++  newprefsubfamily = "Condensed"
++  new_subfamily = $weight
++  j = Strstr(new_fullname, "Bold")
++  if (j == -1)
++    j = Strstr(new_fullname, "Oblique")
++  endif
++  if (j == -1)
++    j = Strstr(new_fullname, "Italic")
++  endif
++  if (j > -1)
++    new_subfamily = Strsub(new_fullname, j)
++    new_fullname = Strsub(new_fullname, 0, j) + "Condensed " + new_subfamily
++    newprefsubfamily = newprefsubfamily + " " + new_subfamily
++  else
++    new_fullname = new_fullname + " Condensed"
++  endif
++  new_familyname = $familyname + " Condensed"
++  SetFontNames(new_fontname, new_familyname, new_fullname)
++  SetOS2Value("Width",4)
++  SetTTFName(1033, 2, new_subfamily) # ttf_subfamily
++  SetTTFName(1033, 3, new_fullname) # ttf_uniqueid
++  SetTTFName(1033, 16, old_familyname) # ttf_preffamilyname
++  SetTTFName(1033, 17, newprefsubfamily) # ttf_prefmodifiers
++  Save($argv[i] + ".narrow")
++  i++
++endloop
+diff -uNr dejavu-fonts-2.30/src/DejaVuSerifCondensed-Italic.sfd dejavu-fonts.trunk/src/DejaVuSerifCondensed-Italic.sfd
+--- dejavu-fonts-2.30/src/DejaVuSerifCondensed-Italic.sfd	2009-08-27 16:26:37.000000000 +0200
++++ dejavu-fonts.trunk/src/DejaVuSerifCondensed-Italic.sfd	2009-09-07 12:17:08.000000000 +0200
+@@ -1,6 +1,6 @@
+ SplineFontDB: 3.0
+ FontName: DejaVuSerifCondensed-Italic
+-FullName: DejaVu Serif Italic Condensed
++FullName: DejaVu Serif Condensed Italic
+ FamilyName: DejaVu Serif Condensed
+ Weight: Book
+ Copyright: Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved.\nDejaVu changes are in public domain\n
+@@ -1899,7 +1899,7 @@
+   3
+   1
+ EndShort
+-LangName: 1033 "" "" "Book" "DejaVu Serif Italic Condensed" "" "Version 2.30" "" "" "DejaVu fonts team" "" "" "http://dejavu.sourceforge.net" "" "Fonts are (c) Bitstream (see below). DejaVu changes are in public domain.+AAoACgAA-Bitstream Vera Fonts Copyright+AAoA-------------------------------+AAoACgAA-Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is a trademark of Bitstream, Inc.+AAoACgAA-Permission is hereby granted, free of charge, to any person obtaining a copy of the fonts accompanying this license (+ACIA-Fonts+ACIA) and associated documentation files (the +ACIA-Font Software+ACIA), to reproduce and distribute the Font Software, including without limitation the rights to use, copy, merge, publish, distribute, and/or sell copies of the Font Software, and to permit persons to whom the Font Software is furnished to do so, subject to the following conditions:+AAoACgAA-The above copyright and trademark notices and this permission notice shall be included in all copies of one or more of the Font Software typefaces.+AAoACgAA-The Font Software may be modified, altered, or added to, and in particular the designs of glyphs or characters in the Fonts may be modified and additional glyphs or  or characters may be added to the Fonts, only if the fonts are renamed to names not containing either the words +ACIA-Bitstream+ACIA or the word +ACIA-Vera+ACIA.+AAoACgAA-This License becomes null and void to the extent applicable to Fonts or Font Software that has been modified and is distributed under the +ACIA-Bitstream Vera+ACIA names.+AAoACgAA-The Font Software may be sold as part of a larger software package but no copy of one or more of the Font Software typefaces may be sold by itself.+AAoACgAA-THE FONT SOFTWARE IS PROVIDED +ACIA-AS IS+ACIA, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.+AAoACgAA-Except as contained in this notice, the names of Gnome, the Gnome Foundation, and Bitstream Inc., shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Font Software without prior written authorization from the Gnome Foundation or Bitstream Inc., respectively. For further information, contact: fonts at gnome dot org. +AAoA" "http://dejavu.sourceforge.net/wiki/index.php/License" "" "DejaVu Serif" "Condensed" 
++LangName: 1033 "" "" "Italic" "DejaVu Serif Condensed Italic" "" "Version 2.30" "" "" "DejaVu fonts team" "" "" "http://dejavu.sourceforge.net" "" "Fonts are (c) Bitstream (see below). DejaVu changes are in public domain.+AAoACgAA-Bitstream Vera Fonts Copyright+AAoA-------------------------------+AAoACgAA-Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is a trademark of Bitstream, Inc.+AAoACgAA-Permission is hereby granted, free of charge, to any person obtaining a copy of the fonts accompanying this license (+ACIA-Fonts+ACIA) and associated documentation files (the +ACIA-Font Software+ACIA), to reproduce and distribute the Font Software, including without limitation the rights to use, copy, merge, publish, distribute, and/or sell copies of the Font Software, and to permit persons to whom the Font Software is furnished to do so, subject to the following conditions:+AAoACgAA-The above copyright and trademark notices and this permission notice shall be included in all copies of one or more of the Font Software typefaces.+AAoACgAA-The Font Software may be modified, altered, or added to, and in particular the designs of glyphs or characters in the Fonts may be modified and additional glyphs or  or characters may be added to the Fonts, only if the fonts are renamed to names not containing either the words +ACIA-Bitstream+ACIA or the word +ACIA-Vera+ACIA.+AAoACgAA-This License becomes null and void to the extent applicable to Fonts or Font Software that has been modified and is distributed under the +ACIA-Bitstream Vera+ACIA names.+AAoACgAA-The Font Software may be sold as part of a larger software package but no copy of one or more of the Font Software typefaces may be sold by itself.+AAoACgAA-THE FONT SOFTWARE IS PROVIDED +ACIA-AS IS+ACIA, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.+AAoACgAA-Except as contained in this notice, the names of Gnome, the Gnome Foundation, and Bitstream Inc., shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Font Software without prior written authorization from the Gnome Foundation or Bitstream Inc., respectively. For further information, contact: fonts at gnome dot org. +AAoA" "http://dejavu.sourceforge.net/wiki/index.php/License" "" "DejaVu Serif" "Condensed Italic" 
+ Encoding: UnicodeFull
+ UnicodeInterp: none
+ NameList: AGL without afii
+diff -uNr dejavu-fonts-2.30/status.txt dejavu-fonts.trunk/status.txt
+--- dejavu-fonts-2.30/status.txt	2009-08-27 16:55:00.000000000 +0200
++++ dejavu-fonts.trunk/status.txt	2009-08-27 16:43:39.000000000 +0200
+@@ -1,5 +1,5 @@
+ This is the status file for DejaVu fonts
+-($Id: status.txt 2362 2009-08-27 14:43:39Z ben_laenen $)
++($Id$)
+ 
+ original = present in original Bitstream Vera 1.10
+ <version> = added in DejaVu fonts <version>
